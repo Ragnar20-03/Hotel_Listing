@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/User/Landing";
 import A_Landing from "./pages/Admin/A_Landing";
-import Navbar from "./components/User/Nav";
+import Navbar from "./components/User/NavBar";
 import Hotels from "./pages/Hotels";
 
 function App() {

@@ -41,7 +41,7 @@ export default function Navbar() {
           <div className="flex-shrink-0 flex items-center">
             <a href="/" className="flex items-center">
               <Hotel />
-              <span className="text-2xl font-bold text-white">
+              <span className="text-2xl font-medium text-white">
                 HotelBooking
               </span>
             </a>
@@ -52,7 +52,7 @@ export default function Navbar() {
               <a
                 key={item.name}
                 href={item.href}
-                className="mx-4 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium  hover:text-gray-700 hover:border-gray-300 transition duration-150 ease-in-out text-white "
+                className="mx-4 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium  hover:text-gray-200 hover:border-gray-300  hover transition duration-150 ease-in-out text-white "
               >
                 {item.name}
               </a>
@@ -133,27 +133,27 @@ export default function Navbar() {
                 <a
                   key={item.name}
                   href={item.href}
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-900 hover:bg-gray-50"
                 >
                   {item.name}
                 </a>
               ))}
               <div className="relative mt-3 mb-3">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Search className="absolute left-1 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <Input
                   type="search"
-                  placeholder="Search hotels..."
-                  className="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  placeholder="       Search hotels..."
+                  className="w-full pl-10 m pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               {accountItems.map((item) => (
                 <a
                   key={item.name}
                   href={item.href}
-                  className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                  className="flex items-center px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-900 hover:bg-gray-50"
                 >
                   <item.icon
-                    className="mr-3 h-5 w-5 text-gray-400"
+                    className="mr-3 h-5 w-5 text-white"
                     aria-hidden="true"
                   />
                   {item.name}

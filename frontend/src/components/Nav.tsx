@@ -1,5 +1,6 @@
 import React from "react";
 import Input from "./Input";
+import { NavLink } from "react-router-dom";
 
 function Nav() {
   return (
@@ -7,10 +8,10 @@ function Nav() {
       <div className="ml-3 p-2 ">Hotel_Booking.com</div>
 
       <div className="flex space-x-5 w-full justify-center">
-        <a href="#"> Home </a>
-        <a href="#"> Hotels </a>
-        <a href="#"> About </a>
-        <a href="#"> Account </a>
+        <NavLink to="/"> Home </NavLink>
+        <NavLink to="/hotels"> Hotels </NavLink>
+        <NavLink to="/about"> About </NavLink>
+        <NavLink to="/account"> Account </NavLink>
       </div>
       <div>
         <Input

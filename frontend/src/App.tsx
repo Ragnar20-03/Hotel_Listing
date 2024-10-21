@@ -1,22 +1,24 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Landing from "./pages/User/Landing";
-import A_Landing from "./pages/Admin/A_Landing";
-import Navbar from "./components/User/NavBar";
-import Hotels from "./pages/Hotels";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import HotelDetailPage from "./pages/HotelDetailPage";
+import { ExploreHotelsPage } from "./pages/ExploreHotelsPage";
+import Header from "./components/ui/Header";
+import Footer from "./components/Footer";
 
-function App() {
+export default function App() {
   return (
-    <div>
-      <Navbar />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/admin" element={<A_Landing />} />
-          <Route path="/hotels" element={<Hotels />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <Router>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/hotel/:id" element={<HotelDetailPage />} />
+            <Route path="/explore" element={<ExploreHotelsPage />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   );
 }
-
-export default App;

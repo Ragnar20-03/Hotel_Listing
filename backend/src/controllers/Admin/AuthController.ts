@@ -3,6 +3,9 @@ import { OTP } from "../../services/Otp/Otp";
 import { sendOTP } from "../../services/Email/email";
 import { Admin } from "../../models/Schema";
 import { uploadImage } from "../../services/Cloudinary/cloudinary";
+import { imageUploadeHandler } from "../Utils/ImageUploadHelper";
+import jwt from "jsonwebtoken"
+import { SECRETE_KEY } from "../../config/dotenv";
 
 export const getOtpController = async (req: Request, res: Response) => {
     const { email, password } = req.body;
@@ -28,41 +31,22 @@ export const verifyOtpController: RequestHandler = async (req, res): Promise<any
         }
 
         const isValidOtp = otpInstance.validateOtp(email, otp);
-        // if (!isValidOtp) {
-        //     return res.status(400).json({ msg: "Invalid OTP!" });
-        // }
+        if (!isValidOtp) {
+            return res.status(400).json({ msg: "Invalid OTP!" });
+        }
 
         if (req.file) {
-            const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            if (!allowedMimeTypes.includes(req.file.mimetype)) {
-                return res.status(400).json({ message: "Only image files (JPEG, PNG, GIF, WebP) are allowed!" });
-            }
-
-            // Generate a unique public ID using the profile name and current timestamp
-            const publicId = `avatar__${Date.now()}`;
-
-            // Upload the new avatar to cloud storage
-            const uploadResult = await uploadImage(req.file.buffer, publicId);
-
-            // Delete the previous avatar from cloud storage if it exists
-            // if (prevAvatar) {
-            //     const prevPublicId = prevAvatar.split('/').pop()?.split('.')[0];
-            //     if (prevPublicId) {
-            //         await removeAvatar(prevPublicId); // Remove previous avatar from cloud storage
-            //     }
-            // } 
-            const newAdmin = await Admin.create({ name, email, password, phone });
+            let uploadurl = await imageUploadeHandler(req.file);
+            const newAdmin = await Admin.create({ name, email, password, phone, url: uploadurl });
             return res.status(200).json({
                 msg: "Admin Created Successfully!",
-                url: uploadResult.secure_url,
+                url: uploadurl,
                 admin: newAdmin, // optional
             });
         }
 
-
-
         // Create Admin
-        const newAdmin = await Admin.create({ name, email, password, phone });
+        const newAdmin = await Admin.create({ name, email, password, phone, url: "#" });
         return res.status(200).json({
             msg: "Admin Created Successfully!",
             admin: newAdmin, // optional
@@ -75,7 +59,30 @@ export const verifyOtpController: RequestHandler = async (req, res): Promise<any
 
 
 export const adminLoginController = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+    console.log("email is : ", email);
 
+    Admin.findOne({ email: email }).then((res1) => {
+        console.log("res1 : ", res1);
+
+        if (res1 != null) {
+            if (res1.password == password) {
+                let token = jwt.sign({ aid: res1._id }, SECRETE_KEY)
+                res.cookie('token', token);
+                return res.status(200).json({
+                    msg: "Login Succesfull !"
+                })
+            }
+            else {
+                return res.status(501).json({
+                    msg: "Password Mismatch !"
+                })
+            }
+        }
+        return res.status(404).json({
+            msg: "Account Not Found , Please Register !"
+        })
+    })
 }
 
 export const addMangerController = async (req: Request, res: Response) => {

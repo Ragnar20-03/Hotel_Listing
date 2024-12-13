@@ -15,6 +15,7 @@ const AdminSchema: Schema = new Schema(
         password: { type: String, required: true },
         phone: { type: String },
         profilePicture: { type: String },
+        url: String
 
     },
     { timestamps: true }

@@ -31,6 +31,7 @@ const AdminSchema = new mongoose_1.Schema({
     password: { type: String, required: true },
     phone: { type: String },
     profilePicture: { type: String },
+    url: String
 }, { timestamps: true });
 const UserSchema = new mongoose_1.Schema({
     name: { type: String, required: true },

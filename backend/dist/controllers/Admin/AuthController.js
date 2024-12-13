@@ -8,12 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateManagerController = exports.addMangerController = exports.adminLoginController = exports.verifyOtpController = exports.getOtpController = void 0;
 const Otp_1 = require("../../services/Otp/Otp");
 const email_1 = require("../../services/Email/email");
 const Schema_1 = require("../../models/Schema");
-const cloudinary_1 = require("../../services/Cloudinary/cloudinary");
+const ImageUploadHelper_1 = require("../Utils/ImageUploadHelper");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const dotenv_1 = require("../../config/dotenv");
 const getOtpController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     console.log("Email :  ", email);
@@ -35,34 +40,20 @@ const verifyOtpController = (req, res) => __awaiter(void 0, void 0, void 0, func
             return res.status(500).json({ msg: "OTP service unavailable." });
         }
         const isValidOtp = otpInstance.validateOtp(email, otp);
-        // if (!isValidOtp) {
-        //     return res.status(400).json({ msg: "Invalid OTP!" });
-        // }
+        if (!isValidOtp) {
+            return res.status(400).json({ msg: "Invalid OTP!" });
+        }
         if (req.file) {
-            const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            if (!allowedMimeTypes.includes(req.file.mimetype)) {
-                return res.status(400).json({ message: "Only image files (JPEG, PNG, GIF, WebP) are allowed!" });
-            }
-            // Generate a unique public ID using the profile name and current timestamp
-            const publicId = `avatar__${Date.now()}`;
-            // Upload the new avatar to cloud storage
-            const uploadResult = yield (0, cloudinary_1.uploadImage)(req.file.buffer, publicId);
-            // Delete the previous avatar from cloud storage if it exists
-            // if (prevAvatar) {
-            //     const prevPublicId = prevAvatar.split('/').pop()?.split('.')[0];
-            //     if (prevPublicId) {
-            //         await removeAvatar(prevPublicId); // Remove previous avatar from cloud storage
-            //     }
-            // } 
-            const newAdmin = yield Schema_1.Admin.create({ name, email, password, phone });
+            let uploadurl = yield (0, ImageUploadHelper_1.imageUploadeHandler)(req.file);
+            const newAdmin = yield Schema_1.Admin.create({ name, email, password, phone, url: uploadurl });
             return res.status(200).json({
                 msg: "Admin Created Successfully!",
-                url: uploadResult.secure_url,
+                url: uploadurl,
                 admin: newAdmin, // optional
             });
         }
         // Create Admin
-        const newAdmin = yield Schema_1.Admin.create({ name, email, password, phone });
+        const newAdmin = yield Schema_1.Admin.create({ name, email, password, phone, url: "#" });
         return res.status(200).json({
             msg: "Admin Created Successfully!",
             admin: newAdmin, // optional
@@ -75,6 +66,28 @@ const verifyOtpController = (req, res) => __awaiter(void 0, void 0, void 0, func
 });
 exports.verifyOtpController = verifyOtpController;
 const adminLoginController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
+    console.log("email is : ", email);
+    Schema_1.Admin.findOne({ email: email }).then((res1) => {
+        console.log("res1 : ", res1);
+        if (res1 != null) {
+            if (res1.password == password) {
+                let token = jsonwebtoken_1.default.sign({ aid: res1._id }, dotenv_1.SECRETE_KEY);
+                res.cookie('token', token);
+                return res.status(200).json({
+                    msg: "Login Succesfull !"
+                });
+            }
+            else {
+                return res.status(501).json({
+                    msg: "Password Mismatch !"
+                });
+            }
+        }
+        return res.status(404).json({
+            msg: "Account Not Found , Please Register !"
+        });
+    });
 });
 exports.adminLoginController = adminLoginController;
 const addMangerController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

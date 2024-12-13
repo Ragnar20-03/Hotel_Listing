@@ -7,6 +7,7 @@ interface IAdmin extends Document {
     password: string;
     phone?: string;
     profilePicture?: string;
+    hotels: string[]
 }
 const AdminSchema: Schema = new Schema(
     {
@@ -15,7 +16,8 @@ const AdminSchema: Schema = new Schema(
         password: { type: String, required: true },
         phone: { type: String },
         profilePicture: { type: String },
-        url: String
+        url: String,
+        hotels: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Hotel' }],
 
     },
     { timestamps: true }

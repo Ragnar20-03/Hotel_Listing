@@ -14,18 +14,18 @@ router.post('/get-otp', getOtpController)
 router.post('/verify-otp', upload.single('file'), verifyOtpController)
 router.post('/login', adminLoginController)
 //manager
-router.post('/add-manager', M_AdminMiddleware, addMangerController)
+// router.post('/add-manager', M_AdminMiddleware, addMangerController)
 
-router.put('/update-manager', M_AdminMiddleware, updateManagerController)
+// router.put('/update-manager', M_AdminMiddleware, updateManagerController)
 
 // HOTEL ----------------------------------------------------------------------------------------
-router.get("/get-hotel", getHotelController)
+router.get("/get-hotel", M_AdminMiddleware, getHotelController)
 
 router.get('/get-hotel/:id', getHotelController)
 
-router.post('/add-hotel', M_AdminMiddleware, addHotelController)
+router.post('/add-hotel', M_AdminMiddleware, upload.array('files', 5), addHotelController)
 
-router.put('/update-hotel', M_AdminMiddleware, updateHotelController)
+router.put('/update-hotel/:hid', M_AdminMiddleware, upload.array('files', 5), updateHotelController)
 
 router.delete('/delete-hotel', M_AdminMiddleware, deleteHotelController)
 

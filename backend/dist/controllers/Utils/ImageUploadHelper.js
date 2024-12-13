@@ -13,9 +13,9 @@ exports.removeImagehandler = exports.imageUploadeHandler = void 0;
 const cloudinary_1 = require("../../services/Cloudinary/cloudinary");
 const imageUploadeHandler = (file) => __awaiter(void 0, void 0, void 0, function* () {
     const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!allowedMimeTypes.includes(file.mimetype)) {
-        return "invalid_file_type";
-    }
+    // if (!allowedMimeTypes.includes(file.mimetype)) {
+    //     return "invalid_file_type"
+    // }
     // Generate a unique public ID using the profile name and current timestamp
     const publicId = `admin_profile${Date.now()}`;
     // Upload the new avatar to cloud storage

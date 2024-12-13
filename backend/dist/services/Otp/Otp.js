@@ -20,7 +20,12 @@ class OTP {
         this.checkExistingOtp = (otp) => {
             return this.userOtps.some(user => user.otp === otp);
         };
+        this.removeOtpForEmail = (email) => {
+            this.userOtps = this.userOtps.filter(user => user.email !== email);
+        };
         this.generateOTP = (email) => __awaiter(this, void 0, void 0, function* () {
+            // Remove existing OTP for the email, if any
+            this.removeOtpForEmail(email);
             let otp = crypto_1.default.randomBytes(3).toString('hex');
             // Keep generating OTPs until a unique one is found
             while (this.checkExistingOtp(otp)) {

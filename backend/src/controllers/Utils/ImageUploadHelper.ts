@@ -2,9 +2,9 @@ import { removeImage, uploadImage } from "../../services/Cloudinary/cloudinary";
 
 export const imageUploadeHandler = async (file: any) => {
     const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!allowedMimeTypes.includes(file.mimetype)) {
-        return "invalid_file_type"
-    }
+    // if (!allowedMimeTypes.includes(file.mimetype)) {
+    //     return "invalid_file_type"
+    // }
 
     // Generate a unique public ID using the profile name and current timestamp
     const publicId = `admin_profile${Date.now()}`;

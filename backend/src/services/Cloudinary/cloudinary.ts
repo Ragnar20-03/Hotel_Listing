@@ -7,7 +7,7 @@ export const uploadImage = (buffer: Buffer, publicId: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
             {
-                folder: 'HotelListing/Profile',
+                folder: 'HotelListing/',
                 public_id: publicId,
                 overwrite: true,
 

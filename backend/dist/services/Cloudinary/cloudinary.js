@@ -15,7 +15,7 @@ const cloudinary_1 = require("cloudinary");
 const uploadImage = (buffer, publicId) => {
     return new Promise((resolve, reject) => {
         const stream = cloudinary_1.v2.uploader.upload_stream({
-            folder: 'HotelListing/Profile',
+            folder: 'HotelListing/',
             public_id: publicId,
             overwrite: true,
         }, (error, result) => {

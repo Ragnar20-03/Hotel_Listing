@@ -16,13 +16,13 @@ exports.router.post('/get-otp', AuthController_1.getOtpController);
 exports.router.post('/verify-otp', cloudinary_1.upload.single('file'), AuthController_1.verifyOtpController);
 exports.router.post('/login', AuthController_1.adminLoginController);
 //manager
-exports.router.post('/add-manager', AdminMiddleware_1.M_AdminMiddleware, AuthController_1.addMangerController);
-exports.router.put('/update-manager', AdminMiddleware_1.M_AdminMiddleware, AuthController_1.updateManagerController);
+// router.post('/add-manager', M_AdminMiddleware, addMangerController)
+// router.put('/update-manager', M_AdminMiddleware, updateManagerController)
 // HOTEL ----------------------------------------------------------------------------------------
-exports.router.get("/get-hotel", HotelController_1.getHotelController);
+exports.router.get("/get-hotel", AdminMiddleware_1.M_AdminMiddleware, HotelController_1.getHotelController);
 exports.router.get('/get-hotel/:id', HotelController_1.getHotelController);
-exports.router.post('/add-hotel', AdminMiddleware_1.M_AdminMiddleware, HotelController_1.addHotelController);
-exports.router.put('/update-hotel', AdminMiddleware_1.M_AdminMiddleware, HotelController_1.updateHotelController);
+exports.router.post('/add-hotel', AdminMiddleware_1.M_AdminMiddleware, cloudinary_1.upload.array('files', 5), HotelController_1.addHotelController);
+exports.router.put('/update-hotel/:hid', AdminMiddleware_1.M_AdminMiddleware, cloudinary_1.upload.array('files', 5), HotelController_1.updateHotelController);
 exports.router.delete('/delete-hotel', AdminMiddleware_1.M_AdminMiddleware, HotelController_1.deleteHotelController);
 // ROOM ----------------------------------------------------------------------------------------
 exports.router.get('/get-room/:hid', RoomController_1.getRoomController);

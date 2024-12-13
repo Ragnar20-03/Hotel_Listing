@@ -24,7 +24,14 @@ export class OTP {
         return this.userOtps.some(user => user.otp === otp);
     };
 
+    private removeOtpForEmail = (email: string) => {
+        this.userOtps = this.userOtps.filter(user => user.email !== email);
+    };
+
     generateOTP = async (email: string) => {
+        // Remove existing OTP for the email, if any
+        this.removeOtpForEmail(email);
+
         let otp = crypto.randomBytes(3).toString('hex');
 
         // Keep generating OTPs until a unique one is found
@@ -37,7 +44,6 @@ export class OTP {
 
         return otp;
     };
-
     validateOtp = (email: string, otp: string) => {
         const currentTime = Date.now();
         console.log("Otp'S Are : ", this.userOtps);

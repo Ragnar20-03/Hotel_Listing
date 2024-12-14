@@ -58,16 +58,10 @@ const HotelSchema = new mongoose_1.Schema({
     },
 }, { timestamps: true });
 const RoomSchema = new mongoose_1.Schema({
-    hotel: { type: mongoose_1.default.Schema.Types.ObjectId, ref: 'Hotel', required: true },
     type: { type: String, required: true },
     pricePerNight: { type: Number, required: true },
     capacity: { type: Number, required: true },
-    availability: [
-        {
-            startDate: { type: Date },
-            endDate: { type: Date },
-        },
-    ],
+    isAvailable: Boolean,
     amenities: [{ type: String }],
     images: [{ type: String }],
 }, { timestamps: true });

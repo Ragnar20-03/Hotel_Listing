@@ -81,30 +81,25 @@ const HotelSchema: Schema = new Schema(
 );
 
 interface IRoom extends Document {
-    hotel: mongoose.Types.ObjectId; // Reference to Hotel
+    // hotel: mongoose.Types.ObjectId; // Reference to Hotel
     type: string; // E.g., "Single", "Double", "Suite"
     pricePerNight: number;
     capacity: number; // Max number of people
-    availability: {
-        startDate: Date;
-        endDate: Date;
-    }[];
+    // availability: {
+    //     startDate: Date;
+    //     endDate: Date;
+    // }[];
+    isAvailable: boolean,
     amenities: string[];
     images: string[];
 }
 
 const RoomSchema: Schema = new Schema(
     {
-        hotel: { type: mongoose.Schema.Types.ObjectId, ref: 'Hotel', required: true },
         type: { type: String, required: true },
         pricePerNight: { type: Number, required: true },
         capacity: { type: Number, required: true },
-        availability: [
-            {
-                startDate: { type: Date },
-                endDate: { type: Date },
-            },
-        ],
+        isAvailable: Boolean,
         amenities: [{ type: String }],
         images: [{ type: String }],
     },

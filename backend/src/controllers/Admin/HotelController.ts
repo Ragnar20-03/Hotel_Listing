@@ -5,11 +5,44 @@ import mongoose from "mongoose";
 
 
 export const getHotelController: RequestHandler | any = async (req: Request, res: Response) => {
-    let aid = req.adminId;
-    let hotels = await Admin.findById(aid).populate('hotels')
-    return res.status(200).json({
-        hotels
-    })
+    try {
+        let aid = req.adminId;
+        let hotels = await Admin.findById(aid).populate('hotels')
+        return res.status(200).json({
+            hotels
+        })
+    }
+    catch (error) {
+        return res.status(501).json({
+            msg: "Something went wrong !"
+        })
+    }
+}
+
+export const getHotelControllerById: RequestHandler | any = async (req: Request, res: Response) => {
+    try {
+        let aid = req.adminId;
+        let hid = req.params.hid;
+        let admin = await Admin.findById(aid);
+        if (admin) {
+            if (admin.hotels.includes(hid)) {
+                let hotel = await Hotel.findById(hid);
+                return res.status(200).json({
+                    hotel
+                })
+            }
+            else {
+                return res.status(404).json({
+                    msg: "Hotel is not associated with admin"
+                })
+            }
+        }
+    }
+    catch (error) {
+        return res.status(501).json({
+            msg: "Something went wrong !"
+        })
+    }
 }
 
 export const addHotelController: RequestHandler | any = async (req: Request, res: Response) => {
@@ -92,88 +125,114 @@ export const addHotelController: RequestHandler | any = async (req: Request, res
 };
 
 export const updateHotelController: RequestHandler | any = async (req: Request, res: Response) => {
-    let adminId = req.adminId;
-    let hotelId: string | mongoose.Types.ObjectId | any = req.params.hid;
-    console.log("hotel id is : ", hotelId);
+    try {
+        let adminId = req.adminId;
+        let hotelId: string | mongoose.Types.ObjectId | any = req.params.hid;
+        console.log("hotel id is : ", hotelId);
 
-    let admin = await Admin.findById(adminId);
-    if (!admin) {
-        return res.status(404).json({
-            msg: "Admin Not Found !"
-        })
-    }
+        let admin = await Admin.findById(adminId);
+        if (!admin) {
+            return res.status(404).json({
+                msg: "Admin Not Found !"
+            })
+        }
 
-    let isHotelAssociated = admin.hotels.includes(hotelId);
-    console.log("iassociated id is : ", isHotelAssociated);
+        let isHotelAssociated = admin.hotels.includes(hotelId);
+        console.log("iassociated id is : ", isHotelAssociated);
 
 
-    if (!isHotelAssociated) {
-        return res.status(501).json({
-            msg: "UnAuthorized Request ! | Hotel is not associated with the admin "
-        })
-    }
+        if (!isHotelAssociated) {
+            return res.status(501).json({
+                msg: "UnAuthorized Request ! | Hotel is not associated with the admin "
+            })
+        }
 
-    const { name, location, description, amenities, policies, contactInfo, ratings } = req.body;
+        const { name, location, description, amenities, policies, contactInfo, ratings } = req.body;
 
-    let images: string[] = admin.hotels;
-    // Correctly handle files from the request
-    let files = req.files;
+        let images: string[] = admin.hotels;
+        // Correctly handle files from the request
+        let files = req.files;
 
-    console.log("Uploaded files: ", files);
 
-    // If files exist, process them
-    if (files && Array.isArray(files)) {  // Ensure files is an array
-        console.log("Processing files...");
+        // If files exist, process them
+        if (files && Array.isArray(files)) {  // Ensure files is an array
 
-        let i = 1;
-        // Loop through each file
-        for (const file of files) {
-            console.log("Processing file: ", i);
+            let i = 1;
+            // Loop through each file
+            for (const file of files) {
+                console.log("Processing file: ", i);
 
-            // Upload file and get the URL
-            const uploadedUrl = await imageUploadeHandler(file);
+                // Upload file and get the URL
+                const uploadedUrl = await imageUploadeHandler(file);
+                if (uploadedUrl) {
+                    console.log("Image URL added: ", i);
+                    images.push(uploadedUrl);
+                }
+                i++;
+            }
+        } else if (files && !Array.isArray(files)) {
+            // If files is not an array but a single object (handle cases where only one file is uploaded)
+            console.log("Processing a single file...");
+
+            const uploadedUrl = await imageUploadeHandler(files); // Cast to the correct type
             if (uploadedUrl) {
-                console.log("Image URL added: ", i);
                 images.push(uploadedUrl);
             }
-            i++;
         }
-    } else if (files && !Array.isArray(files)) {
-        // If files is not an array but a single object (handle cases where only one file is uploaded)
-        console.log("Processing a single file...");
 
-        const uploadedUrl = await imageUploadeHandler(files); // Cast to the correct type
-        if (uploadedUrl) {
-            images.push(uploadedUrl);
+        // Create the new hotel
+        let updateHotel = await Hotel.findByIdAndUpdate(hotelId, {
+            name,
+            location,
+            description,
+            amenities,
+            policies,
+            contactInfo,
+            images,
+            ratings
+        });
+
+        // Return response if hotel is created successfully
+        if (updateHotel) {
+            return res.status(200).json({
+                msg: "Hotel Updared Successfully!",
+                hotel: updateHotel
+            });
+        } else {
+            return res.status(500).json({
+                msg: "Failed to Update hotel, please try again."
+            });
         }
     }
-
-    // Create the new hotel
-    let updateHotel = await Hotel.findByIdAndUpdate(hotelId, {
-        name,
-        location,
-        description,
-        amenities,
-        policies,
-        contactInfo,
-        images,
-        ratings
-    });
-
-    // Return response if hotel is created successfully
-    if (updateHotel) {
-        return res.status(200).json({
-            msg: "Hotel Updared Successfully!",
-            hotel: updateHotel
-        });
-    } else {
+    catch (error) {
+        console.error("Error adding hotel: ", error);
         return res.status(500).json({
-            msg: "Failed to Update hotel, please try again."
+            msg: "Internal Server Error",
         });
     }
 }
 
-export const deleteHotelController = async (req: Request, res: Response) => {
-
+export const deleteHotelController: RequestHandler | any = async (req: Request, res: Response) => {
+    try {
+        let hid = req.params.hid;
+        let aid = req.adminId;
+        let admin = await Admin.findById(aid);
+        if (admin?.hotels.includes(hid)) {
+            let deletedHotel = await Hotel.findByIdAndDelete(hid);
+            return res.status(200).json({
+                deletedHotel
+            })
+        }
+        else {
+            return res.status(501).json({
+                msg: "Hotel is not associated with Admin "
+            })
+        }
+    }
+    catch (error) {
+        return res.status(501).json({
+            msg: " Something Went Wrong !"
+        })
+    }
 }
 

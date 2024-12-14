@@ -137,7 +137,7 @@ interface IReview extends Document {
     user: mongoose.Types.ObjectId; // Reference to User
     hotel: mongoose.Types.ObjectId; // Reference to Hotel
     rating: number; // 1-5
-    comment: string[];
+    comment: string
 }
 
 const ReviewSchema: Schema = new Schema(
@@ -145,7 +145,7 @@ const ReviewSchema: Schema = new Schema(
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
         hotel: { type: mongoose.Schema.Types.ObjectId, ref: 'Hotel', required: true },
         rating: { type: Number, required: true, min: 1, max: 5 },
-        comment: [{ type: String, required: true }],
+        comment: { type: String, required: true },
     },
     { timestamps: true }
 );

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cancelUserBookingController = exports.bookUserRoomController = void 0;
+exports.getBookingsController = exports.cancelUserBookingController = exports.bookUserRoomController = void 0;
 const Schema_1 = require("../../models/Schema");
 const mongoose_1 = __importDefault(require("mongoose"));
 const bookUserRoomController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -95,3 +95,25 @@ const cancelUserBookingController = (req, res) => __awaiter(void 0, void 0, void
     }
 });
 exports.cancelUserBookingController = cancelUserBookingController;
+const getBookingsController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let adminId = req.adminId;
+        let hid = req.params.hid;
+        let bookings = yield Schema_1.Booking.find({ hotel: hid });
+        if (bookings)
+            return res.status(200).json({
+                bookings
+            });
+        else {
+            return res.status(404).json({
+                msg: "No Bookings Found !"
+            });
+        }
+    }
+    catch (errpr) {
+        return res.status(501).json({
+            msg: "Something went Wrong !"
+        });
+    }
+});
+exports.getBookingsController = getBookingsController;

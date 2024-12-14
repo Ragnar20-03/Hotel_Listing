@@ -91,3 +91,26 @@ export const cancelUserBookingController: RequestHandler | any = async (req: Req
         session.endSession();
     }
 };
+
+export const getBookingsController: RequestHandler | any = async (req: Request, res: Response) => {
+    try {
+        let adminId = req.adminId;
+        let hid = req.params.hid;
+
+        let bookings = await Booking.find({ hotel: hid });
+        if (bookings)
+            return res.status(200).json({
+                bookings
+            })
+        else {
+            return res.status(404).json({
+                msg: "No Bookings Found !"
+            })
+        }
+    }
+    catch (errpr) {
+        return res.status(501).json({
+            msg: "Something went Wrong !"
+        })
+    }
+}

@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express'
 import { router as AdminRouter } from "./routes/Admin"
+import { router as userRouter } from "./routes/User"
 import { ConnectDB } from './config/db';
 import { PORT } from './config/dotenv';
 import { cloudinary_start } from './config/cloudinary';
@@ -9,6 +10,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser())
 app.use('/api/v1/admin', AdminRouter);
+app.use('/api/v1/user', userRouter);
 
 app.get('/', async (req: Request, res: Response) => {
     console.log("reqched !");

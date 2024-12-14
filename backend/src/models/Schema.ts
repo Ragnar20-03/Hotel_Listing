@@ -29,7 +29,6 @@ interface IUser extends Document {
     email: string;
     password: string;
     phone?: string;
-    role: string //'user' | 'admin' | 'manager';
     profilePicture?: string;
     bookings: mongoose.Types.ObjectId[]; // References to Booking
 }

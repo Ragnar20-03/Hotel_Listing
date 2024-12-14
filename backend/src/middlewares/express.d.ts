@@ -5,7 +5,7 @@ declare global {
     namespace Express {
         interface Request {
             adminId?: string; // Add any other custom properties as needed,
-
+            userId?: string
         }
     }
 }

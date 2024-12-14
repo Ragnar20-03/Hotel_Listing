@@ -1,7 +1,9 @@
 import { Request, Response, RequestHandler } from "express"
 import { User } from "../../models/Schema";
 import { OTP } from "../../services/Otp/Otp";
+import jwt from "jsonwebtoken"
 import { sendOTP } from "../../services/Email/email";
+import { SECRETE_KEY } from "../../config/dotenv";
 
 export const getUserOtpController: RequestHandler | any = async (req: Request, res: Response) => {
     try {
@@ -31,7 +33,7 @@ export const verifyUserOtpController: RequestHandler | any = async (req: Request
         let otpInstance = OTP.getInstance();
 
         if (otpInstance?.validateOtp(email, otp)) {
-            User.create({
+            let newUser = await User.create({
                 name: name,
                 email: email,
                 password: password,
@@ -39,6 +41,8 @@ export const verifyUserOtpController: RequestHandler | any = async (req: Request
                 bookings: [],
                 profilePicture: "#"
             })
+            let token = jwt.sign({ uid: newUser._id }, SECRETE_KEY)
+            res.cookie('token', token);
             return res.status(200).json({
                 msg: " User Account created Succesfully !"
             })
@@ -59,9 +63,12 @@ export const verifyUserOtpController: RequestHandler | any = async (req: Request
 export const userLoginController: RequestHandler | any = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
+
         User.findOne({ email: email }).then((res1) => {
             if (res1 != null) {
                 if (res1.password == password) {
+                    let token = jwt.sign({ uid: res1._id }, SECRETE_KEY)
+                    res.cookie('token', token);
                     return res.status(200).json({
                         msg: " Login Successfull !"
                     })

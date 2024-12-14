@@ -1,5 +1,5 @@
 import express, { Request, RequestHandler, Response } from "express"
-import { Hotel, Room } from "../../models/Schema";
+import { Admin, Hotel, Room } from "../../models/Schema";
 import { imageUploadeHandler } from "../Utils/ImageUploadHelper";
 
 
@@ -24,6 +24,20 @@ export const addRoomController: RequestHandler | any = async (req: Request, res:
     try {
         let hid = req.params.hid;
         let aid = req.adminId;
+
+        let admin = await Admin.findById(aid);
+        if (!admin?.hotels.includes(hid)) {
+            return res.status(404).json({
+                msg: "Hotel is not associated with the Admin"
+            })
+        }
+
+        let hotel = await Hotel.findById(hid);
+        if (!hid) {
+            return res.status(404).json({
+                msg: "No Such hotel !"
+            })
+        }
 
         const { type, pricePerNight, capacity, amenities } = req.body;
         console.log(type, pricePerNight, capacity, amenities);
@@ -154,6 +168,7 @@ export const updateRoomController: RequestHandler | any = async (req: Request, r
 
 export const deleteRoomController: RequestHandler | any = async (req: Request, res: Response) => {
     try {
+
         let rid = req.params.rid;
         let deletedRoom = await Room.findByIdAndDelete(rid)
         console.log(deletedRoom);

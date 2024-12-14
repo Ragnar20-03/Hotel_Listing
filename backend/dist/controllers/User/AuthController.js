@@ -8,11 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userLoginController = exports.verifyUserOtpController = exports.getUserOtpController = void 0;
 const Schema_1 = require("../../models/Schema");
 const Otp_1 = require("../../services/Otp/Otp");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const email_1 = require("../../services/Email/email");
+const dotenv_1 = require("../../config/dotenv");
 const getUserOtpController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, email, password, phone } = req.body;
@@ -40,7 +45,7 @@ const verifyUserOtpController = (req, res) => __awaiter(void 0, void 0, void 0, 
         }
         let otpInstance = Otp_1.OTP.getInstance();
         if (otpInstance === null || otpInstance === void 0 ? void 0 : otpInstance.validateOtp(email, otp)) {
-            Schema_1.User.create({
+            let newUser = yield Schema_1.User.create({
                 name: name,
                 email: email,
                 password: password,
@@ -48,6 +53,8 @@ const verifyUserOtpController = (req, res) => __awaiter(void 0, void 0, void 0, 
                 bookings: [],
                 profilePicture: "#"
             });
+            let token = jsonwebtoken_1.default.sign({ uid: newUser._id }, dotenv_1.SECRETE_KEY);
+            res.cookie('token', token);
             return res.status(200).json({
                 msg: " User Account created Succesfully !"
             });
@@ -71,6 +78,8 @@ const userLoginController = (req, res) => __awaiter(void 0, void 0, void 0, func
         Schema_1.User.findOne({ email: email }).then((res1) => {
             if (res1 != null) {
                 if (res1.password == password) {
+                    let token = jsonwebtoken_1.default.sign({ uid: res1._id }, dotenv_1.SECRETE_KEY);
+                    res.cookie('token', token);
                     return res.status(200).json({
                         msg: " Login Successfull !"
                     });

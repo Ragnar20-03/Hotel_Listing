@@ -32,6 +32,18 @@ const addRoomController = (req, res) => __awaiter(void 0, void 0, void 0, functi
     try {
         let hid = req.params.hid;
         let aid = req.adminId;
+        let admin = yield Schema_1.Admin.findById(aid);
+        if (!(admin === null || admin === void 0 ? void 0 : admin.hotels.includes(hid))) {
+            return res.status(404).json({
+                msg: "Hotel is not associated with the Admin"
+            });
+        }
+        let hotel = yield Schema_1.Hotel.findById(hid);
+        if (!hid) {
+            return res.status(404).json({
+                msg: "No Such hotel !"
+            });
+        }
         const { type, pricePerNight, capacity, amenities } = req.body;
         console.log(type, pricePerNight, capacity, amenities);
         if (!type || !pricePerNight || !capacity || !amenities) {

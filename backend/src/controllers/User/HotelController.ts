@@ -15,7 +15,7 @@ export const getUserHotelController: RequestHandler | any = async (req: Request,
     }
 }
 export const getUserHotelByIdController: RequestHandler | any = async (req: Request, res: Response) => {
-    let hid; req.params.hid;
+    let hid = req.params.hid;
     try {
         let hotel = await Hotel.findById(hid);
         return res.status(200).json({

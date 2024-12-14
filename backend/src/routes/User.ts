@@ -12,12 +12,13 @@ router.post('/verify-otp', verifyUserOtpController);
 router.post('/login', userLoginController);
 
 
+router.get('/get-hotel', getUserHotelController);
 router.get('/get-hotel/:hid', getUserHotelByIdController);
 
 
-router.get('/get-room/:hid', getUserHotelRoomController);
+router.get('/get-rooms/:hid', getUserHotelRoomController);
 router.get('/get-room/:rid', getUserHotelRoomByIdController);
 
 
 router.post('/book-room/:hid/:rid', M_UserMiddleware, bookUserRoomController);
-router.post('/cancel-book/:bid', M_UserMiddleware, cancelUserBookingController);
+router.post('/cancel-booking/:bid', M_UserMiddleware, cancelUserBookingController);

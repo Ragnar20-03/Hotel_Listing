@@ -26,8 +26,7 @@ const getUserHotelController = (req, res) => __awaiter(void 0, void 0, void 0, f
 });
 exports.getUserHotelController = getUserHotelController;
 const getUserHotelByIdController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let hid;
-    req.params.hid;
+    let hid = req.params.hid;
     try {
         let hotel = yield Schema_1.Hotel.findById(hid);
         return res.status(200).json({

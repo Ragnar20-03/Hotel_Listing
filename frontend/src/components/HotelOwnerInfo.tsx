@@ -11,7 +11,7 @@ export default function HotelOwnerInfo({ owner }: HotelOwnerInfoProps) {
     <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
       <h2 className="text-2xl font-bold mb-4">Meet the Owner</h2>
       <div className="flex items-center mb-4">
-        <img
+        {/* <img
           src={owner.image}
           alt={owner.name}
           className="w-16 h-16 rounded-full mr-4"
@@ -19,7 +19,7 @@ export default function HotelOwnerInfo({ owner }: HotelOwnerInfoProps) {
         <div>
           <h3 className="text-lg font-semibold">{owner.name}</h3>
           <p className="text-gray-600">{owner.description}</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

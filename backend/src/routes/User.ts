@@ -4,6 +4,7 @@ import { getUserHotelRoomByIdController, getUserHotelRoomController } from "../c
 import { bookUserRoomController, cancelUserBookingController } from "../controllers/User/BookingController";
 import { getUserOtpController, userLoginController, verifyUserOtpController } from "../controllers/User/AuthController";
 import { M_UserMiddleware } from "../middlewares/UserMiddleware";
+import { M_AdminMiddleware } from "../middlewares/AdminMiddleware";
 export const router = express.Router();
 
 // User Hotel Controllers ;
@@ -22,3 +23,4 @@ router.get('/get-room/:rid', getUserHotelRoomByIdController);
 
 router.post('/book-room/:hid/:rid', M_UserMiddleware, bookUserRoomController);
 router.post('/cancel-booking/:bid', M_UserMiddleware, cancelUserBookingController);
+router.get('/get-booking/:hid', M_AdminMiddleware,)

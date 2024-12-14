@@ -6,7 +6,10 @@ import { PORT } from './config/dotenv';
 import { cloudinary_start } from './config/cloudinary';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+import cors from "cors"
 const app = express();
+
+app.use(cors())
 app.use(bodyParser.json());
 app.use(cookieParser())
 app.use('/api/v1/admin', AdminRouter);

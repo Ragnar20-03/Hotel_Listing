@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AddRoomModal from "./AddRoomModal";
 import AddHotelModal from "./AddHotelModal";
+import axios from "axios";
 
 interface Hotel {
   id: number;
@@ -19,14 +20,21 @@ const Dashboard: React.FC = () => {
   const [currentHotel, setCurrentHotel] = useState<Hotel | null>(null); // Holds current hotel for editing
 
   useEffect(() => {
-    // axios
-    //   .get("/http://localhost:5100/api/v1/admin/get-hotel")
-    //   .then((res1) => {
-    //     console.log("res1 is : ", res1);
-    //   })
-    //   .catch((err1) => {
-    //     console.log("error is : ", err1);
-    //   });
+    try {
+      axios
+        .get("http://localhost:5100/api/v1/admin/get-hotel", {
+          withCredentials: true,
+        })
+        .then((res1: any) => {
+          console.log("res1 is : ", res1);
+          setHotels(res1.data.hotels.hotels);
+        })
+        .catch((err1) => {
+          console.log("error is : ", err1);
+        });
+    } catch (err) {
+      console.log("error has been Ocuured", err);
+    }
   }, []);
   // Handle opening the Add Hotel modal
   const handleAddHotel = () => {
@@ -115,33 +123,34 @@ const Dashboard: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {hotels.map((hotel) => (
-              <tr key={hotel.id}>
-                <td className="px-4 py-2 border">{hotel.name}</td>
-                <td className="px-4 py-2 border">{hotel.location}</td>
-                <td className="px-4 py-2 border">{hotel.description}</td>
-                <td className="px-4 py-2 border">
-                  <button
-                    onClick={() => editHotel(hotel)}
-                    className="bg-yellow-500 text-white py-1 px-2 rounded-md mr-2"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => deleteHotel(hotel.id)}
-                    className="bg-red-500 text-white py-1 px-2 rounded-md"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={handleAddRoom}
-                    className="bg-green-500 text-white py-1 px-2 rounded-md ml-2"
-                  >
-                    Add Room
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {hotels.length > 0 &&
+              hotels.map((hotel) => (
+                <tr key={hotel.id}>
+                  <td className="px-4 py-2 border">{hotel.name}</td>
+                  <td className="px-4 py-2 border">{hotel.location}</td>
+                  <td className="px-4 py-2 border">{hotel.description}</td>
+                  <td className="px-4 py-2 border">
+                    <button
+                      onClick={() => editHotel(hotel)}
+                      className="bg-yellow-500 text-white py-1 px-2 rounded-md mr-2"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteHotel(hotel.id)}
+                      className="bg-red-500 text-white py-1 px-2 rounded-md"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={handleAddRoom}
+                      className="bg-green-500 text-white py-1 px-2 rounded-md ml-2"
+                    >
+                      Add Room
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

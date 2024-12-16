@@ -16,6 +16,7 @@ import { AuthGuard } from "./pages/Admin/AuthGuard/AuthGuard";
 import { NotFound } from "./pages/NotFound";
 import BookingCard from "./components/BookingCard";
 import BookingForm from "./pages/BookingForm";
+import ErrorBoundary from "./ErrorBoundray";
 
 export default function App() {
   return (
@@ -34,11 +35,11 @@ export default function App() {
                     <Route path="/" element={<Admin />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signin" element={<Signin />} />
-                    <Route element={<AuthGuard />}>
-                      <Route path="/reviews" element={<ReviewsPage />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      {/* Add other private admin routes here */}
-                    </Route>
+                    {/* <Route element={<AuthGuard />}> */}
+                    <Route path="/reviews" element={<ReviewsPage />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    {/* Add other private admin routes here */}
+                    {/* </Route> */}
                     <Route path="/*" element={<NotFound />} />
                   </Routes>
                 </main>

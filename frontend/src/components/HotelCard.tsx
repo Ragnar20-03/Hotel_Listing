@@ -45,6 +45,9 @@ export function HotelCards() {
       .get("http://localhost:5100/api/v1/user/get-hotel")
       .then((res1: any) => {
         setHotels(res1.data.hotels);
+      })
+      .catch((err: any) => {
+        console.log("error is ; ", err);
       });
   }, []);
 

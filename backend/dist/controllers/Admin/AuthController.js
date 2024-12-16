@@ -54,10 +54,24 @@ const verifyOtpController = (req, res) => __awaiter(void 0, void 0, void 0, func
         }
         // Create Admin
         const newAdmin = yield Schema_1.Admin.create({ name, email, password, phone, url: "#" });
-        return res.status(200).json({
-            msg: "Admin Created Successfully!",
-            admin: newAdmin, // optional
-        });
+        if (newAdmin) {
+            let token = jsonwebtoken_1.default.sign({ aid: newAdmin.__v }, dotenv_1.SECRETE_KEY);
+            res.cookie("token", token, {
+                httpOnly: true, // Prevents client-side access to the cookie
+                secure: true, // Ensures cookie is only sent over HTTPS
+                sameSite: "none", // Required for cross-origin requests
+                maxAge: 24 * 60 * 60 * 1000, // 1 day
+            });
+            return res.status(200).json({
+                msg: "Admin Created Successfully!",
+                admin: newAdmin, // optional
+            });
+        }
+        else {
+            return res.status(501).json({
+                msg: "Admin Created Failed!",
+            });
+        }
     }
     catch (err) {
         console.error("Error in verifyOtpController:", err);
@@ -73,7 +87,13 @@ const adminLoginController = (req, res) => __awaiter(void 0, void 0, void 0, fun
         if (res1 != null) {
             if (res1.password == password) {
                 let token = jsonwebtoken_1.default.sign({ aid: res1._id }, dotenv_1.SECRETE_KEY);
-                res.cookie('token', token);
+                res.cookie("token", token, {
+                    httpOnly: false, // Prevents client-side access to the cookie
+                    secure: true, // Ensures cookie is only sent over HTTPS
+                    sameSite: "lax", // Required for cross-origin requests
+                    maxAge: 24 * 60 * 60 * 1000, // 1 day
+                });
+                console.log("cookie sent to broeswer succesfully !", token);
                 return res.status(200).json({
                     msg: "Login Succesfull !"
                 });

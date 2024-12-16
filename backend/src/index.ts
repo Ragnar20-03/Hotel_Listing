@@ -9,7 +9,15 @@ import bodyParser from 'body-parser';
 import cors from "cors"
 const app = express();
 
-app.use(cors())
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', 'true'); // Explicitly allow credentials
+    next();
+});
+
+app.use(cors({
+    origin: true, // Dynamically allow all origins
+    credentials: true, // Allow cookies to be sent
+}));
 app.use(bodyParser.json());
 app.use(cookieParser())
 app.use('/api/v1/admin', AdminRouter);

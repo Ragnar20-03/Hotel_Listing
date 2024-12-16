@@ -21,6 +21,6 @@ router.get('/get-rooms/:hid', getUserHotelRoomController);
 router.get('/get-room/:rid', getUserHotelRoomByIdController);
 
 
-router.post('/book-room/:hid/:rid', M_UserMiddleware, bookUserRoomController);
+router.post('/book-hotel/:hid/:rid', M_UserMiddleware, bookUserRoomController);
 router.post('/cancel-booking/:bid', M_UserMiddleware, cancelUserBookingController);
 router.get('/get-booking/:hid', M_AdminMiddleware,)

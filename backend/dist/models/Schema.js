@@ -83,7 +83,8 @@ const ReviewSchema = new mongoose_1.Schema({
     user: { type: mongoose_1.default.Schema.Types.ObjectId, ref: 'User', required: true },
     hotel: { type: mongoose_1.default.Schema.Types.ObjectId, ref: 'Hotel', required: true },
     rating: { type: Number, required: true, min: 1, max: 5 },
-    comment: { type: String, required: true },
+    date: Date,
+    description: { type: String, required: true },
 }, { timestamps: true });
 exports.Review = mongoose_1.default.model('Review', ReviewSchema);
 exports.Booking = mongoose_1.default.model('Booking', BookingSchema);

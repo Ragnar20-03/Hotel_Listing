@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Login: React.FC = () => {
+const Signin: React.FC = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -97,7 +97,7 @@ const Login: React.FC = () => {
               Admin Panel
             </div>
             <h2 className="text-2xl leading-tight font-bold text-gray-900 mb-5">
-              Sign in to your account
+              Login in to your account
             </h2>
             <form
               className="space-y-4"
@@ -239,4 +239,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Signin;

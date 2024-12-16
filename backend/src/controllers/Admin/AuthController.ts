@@ -47,10 +47,24 @@ export const verifyOtpController: RequestHandler = async (req, res): Promise<any
 
         // Create Admin
         const newAdmin = await Admin.create({ name, email, password, phone, url: "#" });
-        return res.status(200).json({
-            msg: "Admin Created Successfully!",
-            admin: newAdmin, // optional
-        });
+        if (newAdmin) {
+            let token = jwt.sign({ aid: newAdmin.__v }, SECRETE_KEY)
+            res.cookie("token", token, {
+                httpOnly: true,          // Prevents client-side access to the cookie
+                secure: true,            // Ensures cookie is only sent over HTTPS
+                sameSite: "none",        // Required for cross-origin requests
+                maxAge: 24 * 60 * 60 * 1000, // 1 day
+            });
+            return res.status(200).json({
+                msg: "Admin Created Successfully!",
+                admin: newAdmin, // optional
+            });
+        }
+        else {
+            return res.status(501).json({
+                msg: "Admin Created Failed!",
+            });
+        }
     } catch (err) {
         console.error("Error in verifyOtpController:", err);
         return res.status(500).json({ msg: "Something went wrong!" });
@@ -68,7 +82,14 @@ export const adminLoginController = async (req: Request, res: Response) => {
         if (res1 != null) {
             if (res1.password == password) {
                 let token = jwt.sign({ aid: res1._id }, SECRETE_KEY)
-                res.cookie('token', token);
+                res.cookie("token", token, {
+                    httpOnly: false,          // Prevents client-side access to the cookie
+                    secure: true,            // Ensures cookie is only sent over HTTPS
+                    sameSite: "lax",        // Required for cross-origin requests
+                    maxAge: 24 * 60 * 60 * 1000, // 1 day
+                });
+                console.log("cookie sent to broeswer succesfully !", token);
+
                 return res.status(200).json({
                     msg: "Login Succesfull !"
                 })

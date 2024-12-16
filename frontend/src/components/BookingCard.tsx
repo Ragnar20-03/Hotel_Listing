@@ -2,9 +2,11 @@ import { useState } from "react";
 // import { DatePickerWithRange } from "./ui/DatePickerWithRange";
 import { Button } from "./ui/Button";
 import { Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface BookingCardProps {
   hotel: {
+    _id: any;
     price: number;
     stars: number;
   };
@@ -14,8 +16,11 @@ export default function BookingCard({ hotel }: BookingCardProps) {
   const [dateRange, setDateRange] = useState({ from: null, to: null });
   const [guests, setGuests] = useState(1);
 
+  const navigate = useNavigate();
   const handleBooking = () => {
     // Implement booking logic here
+    navigate(`/booking/${hotel._id}`);
+
     console.log("Booking:", { dateRange, guests });
   };
 

@@ -20,6 +20,6 @@ exports.router.get('/get-hotel', HotelController_1.getUserHotelController);
 exports.router.get('/get-hotel/:hid', HotelController_1.getUserHotelByIdController);
 exports.router.get('/get-rooms/:hid', RoomController_1.getUserHotelRoomController);
 exports.router.get('/get-room/:rid', RoomController_1.getUserHotelRoomByIdController);
-exports.router.post('/book-room/:hid/:rid', UserMiddleware_1.M_UserMiddleware, BookingController_1.bookUserRoomController);
+exports.router.post('/book-hotel/:hid/:rid', UserMiddleware_1.M_UserMiddleware, BookingController_1.bookUserRoomController);
 exports.router.post('/cancel-booking/:bid', UserMiddleware_1.M_UserMiddleware, BookingController_1.cancelUserBookingController);
 exports.router.get('/get-booking/:hid', AdminMiddleware_1.M_AdminMiddleware);

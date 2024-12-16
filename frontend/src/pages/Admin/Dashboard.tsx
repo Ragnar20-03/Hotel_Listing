@@ -4,7 +4,7 @@ import AddHotelModal from "./AddHotelModal";
 import axios from "axios";
 
 interface Hotel {
-  id: number;
+  _id: any;
   name: string;
   location: string;
   description: string;
@@ -62,8 +62,17 @@ const Dashboard: React.FC = () => {
   };
 
   // Delete a hotel by its ID
-  const deleteHotel = (id: number) => {
-    setHotels(hotels.filter((hotel) => hotel.id !== id));
+  const deleteHotel = (_id: number) => {
+    axios
+      .delete("http://localhost:5100/api/v1/admin/delete-hotel/" + _id, {
+        withCredentials: true,
+      })
+      .then((res1) => {
+        console.log("Deletioon Response is : ", res1);
+      })
+      .catch((err) => {
+        console.log("deletion error is : ", err);
+      });
   };
 
   // Edit a hotel
@@ -125,7 +134,7 @@ const Dashboard: React.FC = () => {
           <tbody>
             {hotels.length > 0 &&
               hotels.map((hotel) => (
-                <tr key={hotel.id}>
+                <tr key={hotel._id}>
                   <td className="px-4 py-2 border">{hotel.name}</td>
                   <td className="px-4 py-2 border">{hotel.location}</td>
                   <td className="px-4 py-2 border">{hotel.description}</td>
@@ -137,7 +146,7 @@ const Dashboard: React.FC = () => {
                       Edit
                     </button>
                     <button
-                      onClick={() => deleteHotel(hotel.id)}
+                      onClick={() => deleteHotel(hotel._id)}
                       className="bg-red-500 text-white py-1 px-2 rounded-md"
                     >
                       Delete

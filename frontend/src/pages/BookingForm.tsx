@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 
 interface BookingFormProps {
-  // pricePerNight: number; // Price per night
+  hotel: {
+    name: string;
+    location: string;
+    contactInfo: string;
+  };
 }
 
-const BookingForm: React.FC<BookingFormProps> = () => {
+const BookingForm: React.FC<BookingFormProps> = ({ hotel }) => {
   const [formData, setFormData] = useState({
     email: "",
     firstName: "",
@@ -12,32 +16,48 @@ const BookingForm: React.FC<BookingFormProps> = () => {
     checkIn: "",
     checkOut: "",
     guests: 1,
+    roomType: "single", // Default room type
   });
 
   const [totalPrice, setTotalPrice] = useState(0);
 
-  // Handle form input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "guests" ? parseInt(value, 10) : value,
-    }));
+  // Room type price multipliers
+  const roomTypeMultipliers: Record<string, number> = {
+    single: 1, // Base price
+    double: 1.5, // 50% more
+    suite: 2, // Double the price
   };
 
   // Calculate total price
-  const calculateTotalPrice = () => {
-    const checkInDate = new Date(formData.checkIn);
-    const checkOutDate = new Date(formData.checkOut);
+  const calculateTotalPrice = (updatedFormData: typeof formData) => {
+    const checkInDate = new Date(updatedFormData.checkIn);
+    const checkOutDate = new Date(updatedFormData.checkOut);
 
     if (checkInDate && checkOutDate && checkOutDate > checkInDate) {
       const nights =
         (checkOutDate.getTime() - checkInDate.getTime()) /
         (1000 * 60 * 60 * 24);
-      setTotalPrice(nights * 1000 * formData.guests);
+      const basePrice = 1000; // Base price per night per guest
+      const roomMultiplier = roomTypeMultipliers[updatedFormData.roomType];
+      setTotalPrice(
+        nights * basePrice * updatedFormData.guests * roomMultiplier
+      );
     } else {
       setTotalPrice(0); // Reset total price if dates are invalid
     }
+  };
+
+  // Handle form input changes
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    const updatedFormData = {
+      ...formData,
+      [name]: name === "guests" ? parseInt(value, 10) : value,
+    };
+    setFormData(updatedFormData);
+    calculateTotalPrice(updatedFormData);
   };
 
   return (
@@ -125,7 +145,6 @@ const BookingForm: React.FC<BookingFormProps> = () => {
             name="checkIn"
             value={formData.checkIn}
             onChange={handleChange}
-            onBlur={calculateTotalPrice}
             className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             required
           />
@@ -145,7 +164,6 @@ const BookingForm: React.FC<BookingFormProps> = () => {
             name="checkOut"
             value={formData.checkOut}
             onChange={handleChange}
-            onBlur={calculateTotalPrice}
             className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             required
           />
@@ -165,11 +183,31 @@ const BookingForm: React.FC<BookingFormProps> = () => {
             name="guests"
             value={formData.guests}
             onChange={handleChange}
-            onBlur={calculateTotalPrice}
             min={1}
             className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             required
           />
+        </div>
+
+        {/* Room Type */}
+        <div>
+          <label
+            htmlFor="roomType"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Room Type
+          </label>
+          <select
+            id="roomType"
+            name="roomType"
+            value={formData.roomType}
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          >
+            <option value="single">Single</option>
+            <option value="double">Double</option>
+            <option value="suite">Suite</option>
+          </select>
         </div>
 
         {/* Total Price */}
